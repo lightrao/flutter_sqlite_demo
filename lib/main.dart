@@ -5,8 +5,8 @@ import 'user.dart'; // Import the User class
 void main() async {
   // Initialize the database and insert users
   WidgetsFlutterBinding.ensureInitialized();
-  await DatabaseHelper.instance.initDb();
-  await DatabaseHelper.instance.initializeUsers();
+  await DatabaseHelper.databaseHelperInstance.initDb();
+  await DatabaseHelper.databaseHelperInstance.initializeUsers();
 
   runApp(MyApp());
 }
@@ -37,7 +37,8 @@ class _UserListState extends State<UserList> {
   }
 
   Future<void> _fetchUsers() async {
-    final userMaps = await DatabaseHelper.instance.queryAllUsers();
+    final userMaps =
+        await DatabaseHelper.databaseHelperInstance.queryAllUsers();
     setState(() {
       _users = userMaps.map((userMap) => User.fromMap(userMap)).toList();
     });

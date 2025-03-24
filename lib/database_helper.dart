@@ -3,12 +3,15 @@ import 'package:sqflite/sqflite.dart';
 import 'user.dart';
 
 class DatabaseHelper {
-  static final DatabaseHelper instance = DatabaseHelper._instance();
+  static final DatabaseHelper databaseHelperInstance =
+      DatabaseHelper._instance();
   static Database? _database;
 
   DatabaseHelper._instance();
 
+  // Getter for the database
   Future<Database> get db async {
+    // If _database is null initialize it otherwise do nothing
     _database ??= await initDb();
     return _database!;
   }
@@ -21,6 +24,10 @@ class DatabaseHelper {
   }
 
   Future _onCreate(Database db, int version) async {
+    // The 'db' parameter is the Database instance provided by sqflite
+    // The 'version' parameter contains the version number (1) from openDatabase call
+
+    // Execute SQL to create the users table when database is first created
     await db.execute('''
       CREATE TABLE gfg_users (
         id INTEGER PRIMARY KEY,
@@ -28,20 +35,31 @@ class DatabaseHelper {
         email TEXT
       )
     ''');
+    // This function only runs once when the database file is first created
   }
 
   Future<int> insertUser(User user) async {
-    Database db = await instance.db;
+    Database db = await databaseHelperInstance.db;
     return await db.insert('gfg_users', user.toMap());
   }
 
   Future<List<Map<String, dynamic>>> queryAllUsers() async {
-    Database db = await instance.db;
+    Database db = await databaseHelperInstance.db;
     return await db.query('gfg_users');
   }
 
+  Future<Map<String, dynamic>> queryUser(int id) async {
+    Database db = await databaseHelperInstance.db;
+    List<Map<String, dynamic>> result = await db.query(
+      'gfg_users',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    return result.first;
+  }
+
   Future<int> updateUser(User user) async {
-    Database db = await instance.db;
+    Database db = await databaseHelperInstance.db;
     return await db.update(
       'gfg_users',
       user.toMap(),
@@ -51,7 +69,7 @@ class DatabaseHelper {
   }
 
   Future<int> deleteUser(int id) async {
-    Database db = await instance.db;
+    Database db = await databaseHelperInstance.db;
     return await db.delete('gfg_users', where: 'id = ?', whereArgs: [id]);
   }
 
