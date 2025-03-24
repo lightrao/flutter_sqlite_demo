@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../database_helper.dart';
 import '../user.dart';
+import 'add_user_screen.dart';
 
 class UserListScreen extends StatefulWidget {
   const UserListScreen({super.key});
@@ -58,6 +59,20 @@ class _UserListScreenState extends State<UserListScreen> {
       );
     }
   }
+  
+  // Navigate to add user screen
+  Future<void> _navigateToAddUser() async {
+    // Wait for the result from the add user screen
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const AddUserScreen()),
+    );
+    
+    // If user was added, refresh the list
+    if (result == true) {
+      _fetchUsers();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,16 +80,25 @@ class _UserListScreenState extends State<UserListScreen> {
       appBar: AppBar(
         title: Text('GFG User List'),
         backgroundColor: Colors.lightGreen,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: _navigateToAddUser,
+            tooltip: 'Add User',
+          ),
+        ],
       ),
-      body: ListView.builder(
-        itemCount: _users.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(_users[index].username),
-            subtitle: Text(_users[index].email),
-          );
-        },
-      ),
+      body: _users.isEmpty 
+          ? Center(child: Text('No users found'))
+          : ListView.builder(
+              itemCount: _users.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(_users[index].username),
+                  subtitle: Text(_users[index].email),
+                );
+              },
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: _clearAllUsers,
         backgroundColor: Colors.red,
