@@ -13,7 +13,11 @@ This project is a simple Flutter application that demonstrates how to implement 
 - User data model with database mapping
 - Display list of users from SQLite database
 - Database initialization with sample data
-- Implementations for Create, Read, Update, and Delete operations
+- Complete CRUD operations:
+  - **Create**: Add new users through a form interface
+  - **Read**: View all users in a list with their details
+  - **Update**: Edit existing user information
+  - **Delete**: Remove individual users or clear all users
 
 ## Screenshots
 
@@ -50,22 +54,42 @@ This project is a simple Flutter application that demonstrates how to implement 
 
 ## Project Structure
 
-- `lib/main.dart` - Entry point of the application with UI implementation
+- `lib/main.dart` - Entry point of the application
 - `lib/database_helper.dart` - SQLite database management implementation
 - `lib/user.dart` - User model class with data mapping methods
+- `lib/screens/` - UI components organized by functionality:
+  - `user_list_screen.dart` - Displays the list of users with edit/delete options
+  - `add_user_screen.dart` - Form for adding new users
+  - `edit_user_screen.dart` - Form for updating existing users
 
 ## How It Works
 
-The application demonstrates a simple user management system:
+The application demonstrates a complete user management system:
 
 1. When the app starts, it initializes a SQLite database and creates a user table if it doesn't exist
 2. Sample user data is loaded into the database
 3. The main screen displays a list of all users from the database
-4. The database helper includes implementations for:
+4. Users can:
+   - View the list of all users
+   - Add new users via the "+" button in the app bar
+   - Edit a user by tapping the edit (pencil) icon
+   - Delete a single user by tapping the delete (trash) icon
+   - Clear all users at once using the floating action button
+
+5. The database helper includes implementations for:
    - Creating new users
    - Reading user data
    - Updating existing users
-   - Deleting users
+   - Deleting individual users
+   - Deleting all users
+
+## Architecture
+
+The application follows a simple architecture:
+
+- **Data Layer**: User model and DatabaseHelper for SQLite operations
+- **UI Layer**: Screens for displaying and modifying user data
+- **Business Logic**: Handled within screen classes for this simple demo
 
 ## Dependencies
 
@@ -81,3 +105,7 @@ The project uses the following key dependencies:
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Last Updated
+
+March 24, 2025
