@@ -73,6 +73,11 @@ class DatabaseHelper {
     return await db.delete('gfg_users', where: 'id = ?', whereArgs: [id]);
   }
 
+  Future<int> deleteAllUsers() async {
+    Database db = await databaseHelperInstance.db;
+    return await db.delete('gfg_users');
+  }
+
   Future<void> initializeUsers() async {
     List<User> usersToAdd = [
       User(username: 'John', email: 'john@example.com'),
