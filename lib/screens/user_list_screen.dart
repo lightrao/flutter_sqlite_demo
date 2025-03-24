@@ -19,10 +19,19 @@ class _UserListScreenState extends State<UserListScreen> {
     _fetchUsers();
   }
 
+  /// Fetches all users from the database and updates the state.
+  /// 
+  /// This method retrieves all user records from the SQLite database
+  /// through the DatabaseHelper, converts them to User objects,
+  /// and updates the UI by calling setState.
   Future<void> _fetchUsers() async {
-    final userMaps =
+    // Query the database for all user records
+    final userMaps = 
         await DatabaseHelper.databaseHelperInstance.queryAllUsers();
+    
+    // Update the state with the new user list
     setState(() {
+      // Convert each map to a User object and store in _users list
       _users = userMaps.map((userMap) => User.fromMap(userMap)).toList();
     });
   }
@@ -56,6 +65,41 @@ class _UserListScreenState extends State<UserListScreen> {
       _fetchUsers(); // Refresh the list
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('All users deleted')),
+      );
+    }
+  }
+  
+  // Function to delete a single user
+  Future<void> _deleteUser(int? userId) async {
+    if (userId == null) return;
+    
+    // Show confirmation dialog
+    bool confirm = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete User'),
+          content: Text('Are you sure you want to delete this user?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    ) ?? false;
+
+    // If user confirmed, delete the user
+    if (confirm) {
+      await DatabaseHelper.databaseHelperInstance.deleteUser(userId);
+      _fetchUsers(); // Refresh the list
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('User deleted')),
       );
     }
   }
@@ -96,6 +140,11 @@ class _UserListScreenState extends State<UserListScreen> {
                 return ListTile(
                   title: Text(_users[index].username),
                   subtitle: Text(_users[index].email),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: () => _deleteUser(_users[index].id),
+                    tooltip: 'Delete User',
+                  ),
                 );
               },
             ),
