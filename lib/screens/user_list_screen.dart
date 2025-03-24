@@ -26,6 +26,39 @@ class _UserListScreenState extends State<UserListScreen> {
     });
   }
 
+  // Function to clear all users
+  Future<void> _clearAllUsers() async {
+    // Show confirmation dialog
+    bool confirm = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Clear All Users'),
+          content: Text('Are you sure you want to delete all users?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    ) ?? false;
+
+    // If user confirmed, delete all users
+    if (confirm) {
+      await DatabaseHelper.databaseHelperInstance.deleteAllUsers();
+      _fetchUsers(); // Refresh the list
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('All users deleted')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +74,12 @@ class _UserListScreenState extends State<UserListScreen> {
             subtitle: Text(_users[index].email),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _clearAllUsers,
+        backgroundColor: Colors.red,
+        tooltip: 'Clear All Users',
+        child: Icon(Icons.delete),
       ),
     );
   }
