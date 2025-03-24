@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'database_helper.dart'; // Import the DatabaseHelper class
-import 'user.dart'; // Import the User class
+import 'database_helper.dart'; 
+import 'screens/user_list_screen.dart'; // Import the new UserListScreen
 
 void main() async {
   // Initialize the database and insert users
@@ -16,50 +16,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'User Management', home: UserList());
-  }
-}
-
-class UserList extends StatefulWidget {
-  const UserList({super.key});
-
-  @override
-  _UserListState createState() => _UserListState();
-}
-
-class _UserListState extends State<UserList> {
-  List<User> _users = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchUsers();
-  }
-
-  Future<void> _fetchUsers() async {
-    final userMaps =
-        await DatabaseHelper.databaseHelperInstance.queryAllUsers();
-    setState(() {
-      _users = userMaps.map((userMap) => User.fromMap(userMap)).toList();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('GFG User List'),
-        backgroundColor: Colors.lightGreen,
+    return MaterialApp(
+      title: 'User Management',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      body: ListView.builder(
-        itemCount: _users.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(_users[index].username),
-            subtitle: Text(_users[index].email),
-          );
-        },
-      ),
+      home: UserListScreen(), // Use the decoupled UserListScreen
     );
   }
 }
